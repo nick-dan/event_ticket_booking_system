@@ -6,6 +6,7 @@ const { pool } = require('../config/mysql');
 
 // Book Ticket for an Event
 const bookTicket = async (userId, eventId) => {
+    // Decrement available tickets atomically
     const event = await Event.findOneAndUpdate(
         { _id: eventId, availableTickets: { $gt: 0 } },
         { $inc: { availableTickets: -1 } },
@@ -14,8 +15,7 @@ const bookTicket = async (userId, eventId) => {
 
     if (!event) {
         throw {
-            message: 'SOLD_OUT',
-            status: 204
+            message: 'SOLD_OUT'
         };
     }
 
